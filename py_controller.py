@@ -60,6 +60,7 @@ class Vehicle():
     P : np.ndarray
     V : np.ndarray
 
+
     def __init__(self, log = DummyLogger()):
         self.log = log
         pass
@@ -87,10 +88,11 @@ class Controller():
         pass
 
     def reset(self):
-        raise NotImplementedError
+        print("reset ran")
+        #raise NotImplementedError
 
     def __call__(self, Y, R, t, **kwargs):
-        ''' Computes the controller output, U, as a function of the measurement, Y, reference signal, R, and time, t '''
+
         raise NotImplementedError
 
     def start_adaptation(self):
