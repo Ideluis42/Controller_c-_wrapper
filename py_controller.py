@@ -89,6 +89,7 @@ class Controller():
 
     def reset(self):
         print("reset ran")
+        return 1
         #raise NotImplementedError
 
     def __call__(self, Y, R, t, **kwargs):

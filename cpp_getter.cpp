@@ -4,29 +4,6 @@
 
 #include </home/newHomeDir/Controller_c-_wrapper/cpp_getter.h>
 
-
-/** 
- * Code for getting method within class:
-
-    printf("getting method...\n");
-    py_meth = PyObject_GetAttrString(py_inst, "method");
-    
-    if(py_meth == NULL)
-    {
-        PyErr_Print();
-        exit(-1);
-    }
-
-    printf("method retrieved...\n");
-    Py_DECREF(py_inst);
-
-    printf("calling method...\n");
-    py_res = PyObject_CallObject(py_meth, NULL);
-    printf("Method called...\n");
-    
-    // Convert result to C--no code implemented because returns can vary
- */
-
 PyObject *py_mod; // PyObject for the module/.py file
 
 void starter()
@@ -41,7 +18,7 @@ void starter()
 
 
     // get module
-    printf("importing module...\n");
+  //  printf("importing module...\n");
     
     py_mod = PyImport_ImportModule("py_controller");
     
@@ -52,18 +29,19 @@ void starter()
         exit(-1);
     }
 
-    printf("module imported...\n");
+    // printf("module imported...\n");
 }
 
-void controller()
+PyObject* get_class(const char* class_name)
 {
-    // Initializing 
+    // returns are instantiated object of the class inputted
     PyObject *py_class, *py_inst;
+    
+    // printf("inside fetcher_base \n");
     starter();
 
-    // get class from python module
-    // printf("getting class...\n");
-    py_class = PyObject_GetAttrString(py_mod, "Controller");
+    // get class
+    py_class = PyObject_GetAttrString(py_mod, class_name);
 
     // check that the class exists--if it doesn't, print error and exit program
     if(py_class == NULL)
@@ -72,14 +50,10 @@ void controller()
         exit(-1);
     }
 
-    // printf("class retrieved...\n");
     Py_DECREF(py_mod); // decrement the reference count because no longer needed
 
-    // instantiate an obj of the class so we can use it
-    // printf("instantiating class... \n");
-
     py_inst = PyEval_CallObject(py_class, NULL);
-    
+
     // if the instantiation doesn't work, print error and exit program
     if(py_inst == NULL)
     {
@@ -87,55 +61,54 @@ void controller()
         exit(-1);
     }
 
-    printf("class instantiated...\n");
-     
     Py_DECREF(py_class); // decrement the reference count because no longer needed
 
-    printf("controller function called and worked \n"); //print statement for assurance the function ran
+    // printf("about to return...\n");
+    return py_inst;
 }
 
-void logger()
+// TO-DO: figure out way to include args
+// Currently only works if there are no arguments--will fix? 
+PyObject* get_function(char* func_name, PyObject *py_inst)
 {
-    // Initializing 
-    PyObject *py_class, *py_inst;
-    starter();
+    // To note: this func returns the PyObject* version of the results
+    // NOT a C++ object--will need to be converted afterwards
 
-    // get class from python module
-    // printf("getting class...\n");
-    py_class = PyObject_GetAttrString(py_mod, "Logger");
+    PyObject *py_meth, *py_res;
 
-    // check that the class exists--if it doesn't, print error and exit program
-    if(py_class == NULL)
-    {
-        PyErr_Print();
-        exit(-1);
-    }
-
-    // printf("class retrieved...\n");
-    Py_DECREF(py_mod); // decrement the reference count because no longer needed
-
-    // instantiate an obj of the class so we can use it
-    // printf("instantiating class... \n");
-
-    py_inst = PyEval_CallObject(py_class, NULL);
+    // retrieve the method
+    py_meth = PyObject_GetAttrString(py_inst, func_name);
     
-    // if the instantiation doesn't work, print error and exit program
-    if(py_inst == NULL)
+    // check to make sure the method actually exists--if it doesn't, print the error and exit the program
+    if(py_meth == NULL)
     {
         PyErr_Print();
         exit(-1);
     }
 
-    printf("class instantiated...\n");
-     
-    Py_DECREF(py_class); // decrement the reference count because no longer needed
+    Py_DECREF(py_inst); // decrement the reference count b/c no longer needed 
 
-    printf("logger function called and worked \n"); //print statement for assurance the function ran
+    //Call the method. Save the returns in a variable (if they exist)
+    py_res = PyObject_CallObject(py_meth, NULL); // save the result
 
+    return py_res;
 }
+
 int main()
 {
-    controller();
-    logger();
+    //measure time takes to get classes
+    time_t begin, end;
+    time(&begin);
+
+    PyObject* controller = get_class("Controller");
+    PyObject* result = get_function((char*)"reset", controller); // will need to change to c++ object
+
+    time(&end);
+
+    // print elapsed time and print
+    time_t elapsed = end-begin;
+
+    printf("time elapsed: %ld \n", elapsed);
+
     return 1;
 }
