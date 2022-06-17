@@ -67,14 +67,21 @@ PyObject* get_class(const char* class_name)
     return py_inst;
 }
 
-// TO-DO: figure out way to include args
-// Currently only works if there are no arguments--will fix? 
-PyObject* get_function(char* func_name, PyObject *py_inst)
+// TO-DO: check args
+PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args)
 {
+
     // To note: this func returns the PyObject* version of the results
     // NOT a C++ object--will need to be converted afterwards
 
     PyObject *py_meth, *py_res;
+    
+    // check if type is tuple, if not print error and exit program
+    if(PyTuple_Check(args))
+    {
+        printf("ERROR: arguments are not in a tuple");
+        exit(-1);
+    }
 
     // retrieve the method
     py_meth = PyObject_GetAttrString(py_inst, func_name);
@@ -89,7 +96,7 @@ PyObject* get_function(char* func_name, PyObject *py_inst)
     Py_DECREF(py_inst); // decrement the reference count b/c no longer needed 
 
     //Call the method. Save the returns in a variable (if they exist)
-    py_res = PyObject_CallObject(py_meth, NULL); // save the result
+    py_res = PyObject_Call(py_meth, args); // save the result
 
     return py_res;
 }
