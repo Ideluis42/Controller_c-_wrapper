@@ -6,9 +6,13 @@
 
 PyObject *py_mod; // PyObject for the module/.py file
 
+/**
+ * @brief Starter function for class importation that initializes the python interpreter 
+ *        and imports the module
+ */
 void starter()
 {
-    printf("Initializing...\n");
+    // printf("Initializing...\n");
     Py_Initialize(); // initialize interpreter
 
     // imports
@@ -30,18 +34,25 @@ void starter()
         exit(-1);
     }
 
-    printf("module imported...\n");
+    // printf("module imported...\n");
 }
+
+/**
+ * @brief Get a class object from a python module
+ * 
+ * @param class_name: a const char* representing the name of the class
+ * @return PyObject* py_inst: An instantiated object of the class
+ */
 
 PyObject* get_class(const char* class_name)
 {
     // returns are instantiated object of the class inputted
     PyObject *py_class, *py_inst;
     
-    printf("inside fetcher_base... \n");
+    // printf("inside fetcher_base... \n");
     starter();
 
-    printf("getting class...\n");
+    // printf("getting class...\n");
     // get class
     py_class = PyObject_GetAttrString(py_mod, class_name);
 
@@ -54,9 +65,9 @@ PyObject* get_class(const char* class_name)
 
     Py_DECREF(py_mod); // decrement the reference count because no longer needed
 
-    printf("class retrieved...\n");
+    // printf("class retrieved...\n");
 
-    printf("instantiating class...\n");
+    // printf("instantiating class...\n");
     py_inst = PyEval_CallObject(py_class, NULL);
 
     // if the instantiation doesn't work, print error and exit program
@@ -67,13 +78,22 @@ PyObject* get_class(const char* class_name)
     }
 
     Py_DECREF(py_class); // decrement the reference count because no longer needed
-    printf("class instantiated...\n");
-    printf("about to return...\n");
+    // printf("class instantiated...\n");
+    // printf("about to return...\n");
     return py_inst;
 }
 
-// TO-DO: check args
-// if function has no args, just pass an empty tuple
+/**
+ * @brief Get a function within a class and call it
+ * 
+ * @param func_name: char* representing the name of the function 
+ * @param py_inst char* the instantiated object of a python class
+ * @param args: PyObject* tuple with the arguments within. 
+ *              If there are no arguments, the tuple should be empty
+ * @param kwargs PyObject* dictionary with the keyword arguments within. 
+ *               If there are no arguments the dictionary should be empty.
+ * @return PyObject* py_res: The return from the function called
+ */
 PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObject *kwargs)
 {
 
@@ -82,7 +102,7 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObj
 
     PyObject *py_meth, *py_res;
     
-    printf("getting method...\n");
+    // printf("getting method...\n");
     // retrieve the method
     py_meth = PyObject_GetAttrString(py_inst, func_name);
     
@@ -94,9 +114,9 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObj
     }
 
     Py_DECREF(py_inst); // decrement the reference count b/c no longer needed 
-    printf("method retrieved...\n");
+    // printf("method retrieved...\n");
 
-    printf("checking args type...\n");
+    // printf("checking args type...\n");
     // check if type is tuple, if not print error and exit program
     
     if(!PyTuple_Check(args))
@@ -105,20 +125,19 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObj
         printf("ERROR: args is not a tuple or null");
         exit(-1);
     }
-    printf("args type checked...\n");
+    // printf("args type checked...\n");
 
-    printf("checking kwargs type...\n");
-
+    // printf("checking kwargs type...\n");
+ 
     if(!PyDict_Check(kwargs))
     {
-        PyErr_Print();
         printf("ERROR: kwargs is not a dictionary");
         exit(-1);
     }
-    printf("kwargs type checked...\n");
+    //printf("kwargs type checked...\n");
 
-    printf("calling method...\n");
-    // error here!
+    //printf("calling method...\n");
+   
     py_res = PyObject_Call(py_meth, args, kwargs); // save the result
     if (py_res == NULL)
     {
@@ -126,7 +145,7 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObj
         exit(-1);
     }
     
-    printf("method called...\n");
+    //printf("method called...\n");
 
     return py_res;
 }
@@ -137,16 +156,22 @@ int main()
     time_t begin, end;
     time(&begin);
 
+    // get the class
     PyObject* controller = get_class("Controller");
+
+    // declare the args
     PyObject* args = PyTuple_Pack(Py_ssize_t(3), PyLong_FromLong(1), PyLong_FromLong(10), PyLong_FromLong(15)); 
     
+    // declare the kwargs
     PyObject* kwargs = PyDict_New();
     PyObject* key = PyUnicode_FromString("key");
 
     int check = PyDict_SetItem(kwargs, key, PyLong_FromLong(1));
     
+    // get the returns from the function
     PyObject* result = get_function((char*)"test", controller, args, kwargs); // will need to change to c++ object
 
+    // can change the result so it's a C++ Object not a PyObject if needed
     time(&end);
 
     // print elapsed time and print

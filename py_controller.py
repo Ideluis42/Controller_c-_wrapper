@@ -99,6 +99,7 @@ class Controller():
     def stop_adaptation(self):
         pass
 
+    # added by me to test the getter--works though
     def test(self, x, y, z, **kwargs):
         print("within test")
         return 1
