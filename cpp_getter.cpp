@@ -1,6 +1,6 @@
 // Code for python controller to interface with ros in c++
 // By: Isabel de Luis (ideluis@olin.edu)
-// Last edited: June 16, 2022
+// Last edited: June 17, 2022
 
 #include </home/newHomeDir/Controller_c-_wrapper/cpp_getter.h>
 
@@ -8,6 +8,7 @@ PyObject *py_mod; // PyObject for the module/.py file
 
 void starter()
 {
+    printf("Initializing...\n");
     Py_Initialize(); // initialize interpreter
 
     // imports
@@ -18,7 +19,7 @@ void starter()
 
 
     // get module
-  //  printf("importing module...\n");
+    printf("importing module...\n");
     
     py_mod = PyImport_ImportModule("py_controller");
     
@@ -29,7 +30,7 @@ void starter()
         exit(-1);
     }
 
-    // printf("module imported...\n");
+    printf("module imported...\n");
 }
 
 PyObject* get_class(const char* class_name)
@@ -37,9 +38,10 @@ PyObject* get_class(const char* class_name)
     // returns are instantiated object of the class inputted
     PyObject *py_class, *py_inst;
     
-    // printf("inside fetcher_base \n");
+    printf("inside fetcher_base... \n");
     starter();
 
+    printf("getting class...\n");
     // get class
     py_class = PyObject_GetAttrString(py_mod, class_name);
 
@@ -52,6 +54,9 @@ PyObject* get_class(const char* class_name)
 
     Py_DECREF(py_mod); // decrement the reference count because no longer needed
 
+    printf("class retrieved...\n");
+
+    printf("instantiating class...\n");
     py_inst = PyEval_CallObject(py_class, NULL);
 
     // if the instantiation doesn't work, print error and exit program
@@ -62,13 +67,14 @@ PyObject* get_class(const char* class_name)
     }
 
     Py_DECREF(py_class); // decrement the reference count because no longer needed
-
-    // printf("about to return...\n");
+    printf("class instantiated...\n");
+    printf("about to return...\n");
     return py_inst;
 }
 
 // TO-DO: check args
-PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args)
+// if function has no args, just pass an empty tuple
+PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObject *kwargs)
 {
 
     // To note: this func returns the PyObject* version of the results
@@ -76,13 +82,7 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args)
 
     PyObject *py_meth, *py_res;
     
-    // check if type is tuple, if not print error and exit program
-    if(PyTuple_Check(args))
-    {
-        printf("ERROR: arguments are not in a tuple");
-        exit(-1);
-    }
-
+    printf("getting method...\n");
     // retrieve the method
     py_meth = PyObject_GetAttrString(py_inst, func_name);
     
@@ -94,9 +94,39 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args)
     }
 
     Py_DECREF(py_inst); // decrement the reference count b/c no longer needed 
+    printf("method retrieved...\n");
 
-    //Call the method. Save the returns in a variable (if they exist)
-    py_res = PyObject_Call(py_meth, args); // save the result
+    printf("checking args type...\n");
+    // check if type is tuple, if not print error and exit program
+    
+    if(!PyTuple_Check(args))
+    {
+        //Call the method. Save the returns in a variable (if they exist)
+        printf("ERROR: args is not a tuple or null");
+        exit(-1);
+    }
+    printf("args type checked...\n");
+
+    printf("checking kwargs type...\n");
+
+    if(!PyDict_Check(kwargs))
+    {
+        PyErr_Print();
+        printf("ERROR: kwargs is not a dictionary");
+        exit(-1);
+    }
+    printf("kwargs type checked...\n");
+
+    printf("calling method...\n");
+    // error here!
+    py_res = PyObject_Call(py_meth, args, kwargs); // save the result
+    if (py_res == NULL)
+    {
+        PyErr_Print();
+        exit(-1);
+    }
+    
+    printf("method called...\n");
 
     return py_res;
 }
@@ -108,7 +138,14 @@ int main()
     time(&begin);
 
     PyObject* controller = get_class("Controller");
-    PyObject* result = get_function((char*)"reset", controller); // will need to change to c++ object
+    PyObject* args = PyTuple_Pack(Py_ssize_t(3), PyLong_FromLong(1), PyLong_FromLong(10), PyLong_FromLong(15)); 
+    
+    PyObject* kwargs = PyDict_New();
+    PyObject* key = PyUnicode_FromString("key");
+
+    int check = PyDict_SetItem(kwargs, key, PyLong_FromLong(1));
+    
+    PyObject* result = get_function((char*)"test", controller, args, kwargs); // will need to change to c++ object
 
     time(&end);
 

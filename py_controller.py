@@ -88,12 +88,9 @@ class Controller():
         pass
 
     def reset(self):
-        print("reset ran")
-        return 1
-        #raise NotImplementedError
+        raise NotImplementedError
 
     def __call__(self, Y, R, t, **kwargs):
-
         raise NotImplementedError
 
     def start_adaptation(self):
@@ -101,6 +98,10 @@ class Controller():
 
     def stop_adaptation(self):
         pass
+
+    def test(self, x, y, z, **kwargs):
+        print("within test")
+        return 1
 
 class Planner():
     def __init__(self) -> None:
