@@ -3,11 +3,11 @@
 #include </usr/include/python3.8/Python.h>
 #include </usr/include/time.h>
 #include <curses.h>
+#include <stdexcept>
 
 using namespace std;
 #include <vector>
-#include </home/newHomeDir/Controller_c-_wrapper/pyhelper.hpp>
 
-void starter();
-void controller_cpp_interface();
-void logger_cpp_interface();
+// void starter();
+// void controller_cpp_interface();
+// void logger_cpp_interface();
