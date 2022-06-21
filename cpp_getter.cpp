@@ -179,37 +179,37 @@ PyObject* get_function(char* func_name, PyObject *py_inst, PyObject *args, PyObj
     return py_res;
 }
 
-int main()
-{
+// int main()
+// {
 
-    //measure time takes to get classes
-    time_t begin, end;
-    time(&begin);
-    // declare args
-    starter();
+//     //measure time takes to get classes
+//     time_t begin, end;
+//     time(&begin);
+//     // declare args
+//     starter();
 
-    // declare the args
-    PyObject* args = PyTuple_Pack(Py_ssize_t(7), PyFloat_FromDouble(.5), PyFloat_FromDouble(1.0), PyFloat_FromDouble(1.5), PyFloat_FromDouble(.01), PyFloat_FromDouble(10.0), PyFloat_FromDouble(1.0), PyFloat_FromDouble(10.0)); 
-    // get the class
-    PyObject* controller = get_class("PID", args);
+//     // declare the args
+//     PyObject* args = PyTuple_Pack(Py_ssize_t(7), PyFloat_FromDouble(.5), PyFloat_FromDouble(1.0), PyFloat_FromDouble(1.5), PyFloat_FromDouble(.01), PyFloat_FromDouble(10.0), PyFloat_FromDouble(1.0), PyFloat_FromDouble(10.0)); 
+//     // get the class
+//     PyObject* controller = get_class("PID", args);
     
-    // get the returns from the function
-    PyObject* result = get_function((char*)"controller", controller, PyTuple_New(0), PyDict_New()); // will need to change to c++ object
+//     // get the returns from the function
+//     PyObject* result = get_function((char*)"new_position", controller, PyTuple_New(0), PyDict_New()); // will need to change to c++ object
 
-    // can change the result so it's a C++ Object not a PyObject if needed
-    // PyObject *position = result[0];    
-    // PyObject *velocity = result[1];
-    // PyObject *acceleration = result[2];      
+//     // can change the result so it's a C++ Object not a PyObject if needed
+//     // PyObject *position = result[0];    
+//     // PyObject *velocity = result[1];
+//     // PyObject *acceleration = result[2];      
 
-    //vector<double> pos = listTupleToVector_Float((PyObject*)result[1]);
+//     //vector<double> pos = listTupleToVector_Float((PyObject*)result[1]);
 
 
-    time(&end);
+//     time(&end);
 
-    // print elapsed time and print
-    time_t elapsed = end-begin;
+//     // print elapsed time and print
+//     time_t elapsed = end-begin;
 
-    printf("time elapsed: %ld \n", elapsed);
+//     printf("time elapsed: %ld \n", elapsed);
 
-    return 1;
-}
+//     return 1;
+// }

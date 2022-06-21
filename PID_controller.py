@@ -2,7 +2,7 @@
 PID Controller Code
 '''
 
-from calendar import c
+
 import numpy as np
 
 class PID():
@@ -27,8 +27,35 @@ class PID():
         self.tf = tf
         self.mass = mass
         self.posCmd = posCmd
-    
-    def controller(self):
+
+        self.num_steps = tf/dt
+        self.times = np.linspace(0, tf, self.num_steps)
+
+        self.integrations = [0] * len(self.times)
+        self.error = [0] * len(self.times)
+
+    def counter(f):
+        global calls
+        calls = 2
+        def g(*args, **kwargs):
+            global calls
+            calls += 1
+            return f(*args, **kwargs)
+        return g
+
+    @counter
+    def get_new_position(self, curr_pos, curr_vel, curr_accel):
+        e = self.posCmd - curr_pos
+        self.integrations[calls - 1] = (self.error[calls] + self.error[calls - 1])*self.dt/2
+        ctrl = self.Kp*e + self.Ki * sum(self.integrations) + self.Kd*((self.error[calls] - self.error[calls-1])/self.dt)
+        force_tot = ctrl # need to factor in the other forces...rip me who sucks at physics
+        new_accel = force_tot/self.mass
+        new_vel = curr_vel + new_accel*self.dt
+        new_pos = curr_pos + new_vel*self.dt
+
+        return new_pos
+
+    def __call__(self):
 
         # print("def controller")
 
@@ -40,21 +67,21 @@ class PID():
         velocity = [0] * len(times) # m/s
         position = [0] * len(times) # m
 
-        integerations = [0] * len(times)
+        integrations = [0] * len(times)
         error = [0] * len(times)
         
 
         counter = 2
         # print("finished initializing")
-
+    
 
         while counter < len(times):
             # print(f"inside while loop: counter = {counter}")
 
             e = self.posCmd - position[counter-1]
-            integerations[counter-1] = (error[counter] + error[counter - 1]) \
+            integrations[counter-1] = (error[counter] + error[counter - 1]) \
                 *self.dt/2
-            ctrl = self.Kp * e + self.Ki * sum(integerations) + \
+            ctrl = self.Kp * e + self.Ki * sum(integrations) + \
                 self.Kd*((error[counter] - error[counter-1])/self.dt)
             # print(f"ctrl = {ctrl}")
 
