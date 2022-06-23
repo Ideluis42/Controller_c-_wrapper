@@ -43,16 +43,13 @@ class PID():
         return g
 
     @counter
-    def get_new_position(self, curr_pos, curr_vel, curr_accel):
+    def get_force(self, curr_pos):
         e = self.posCmd - curr_pos
         self.integrations[calls - 1] = (self.error[calls] + self.error[calls - 1])*self.dt/2
         ctrl = self.Kp*e + self.Ki * sum(self.integrations) + self.Kd*((self.error[calls] - self.error[calls-1])/self.dt)
         force_tot = ctrl # need to factor in the other forces...rip me who sucks at physics
-        new_accel = force_tot/self.mass
-        new_vel = curr_vel + new_accel*self.dt
-        new_pos = curr_pos + new_vel*self.dt
 
-        return new_pos
+        return force_tot
 
     def __call__(self):
 

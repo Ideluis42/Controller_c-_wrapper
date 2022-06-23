@@ -10,8 +10,12 @@ project(scripts)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  message_generation
   std_msgs
 )
+set(Python_ADDITIONAL_VERSIONS 3.8)
+# find_package(Python3 COMPONENTS Interpreter Development)
+find_package(PythonLibs 3.8 EXACT)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -68,10 +72,7 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(DEPENDENCIES std_msgs)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -116,9 +117,17 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
+
+add_executable(main src/main.cpp)
+target_link_libraries(main ${catkin_LIBRARIES} ${PYTHON_LIBRARIES})
+add_dependencies(main scripts_generate_messages_cpp)
+
+# add_executable(main src/main.cpp)
+# target_link_libraries(main ${catkin_LIBRARIES} ${PYTHON_LIBRARIES})
+# add_dependencies(main scripts_generate_messages_cpp)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

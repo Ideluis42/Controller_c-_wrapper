@@ -2,7 +2,7 @@
 // By: Isabel de Luis (ideluis@olin.edu)
 // Last edited: June 17, 2022
 
-#include </home/newHomeDir/Controller_c-_wrapper/cpp_getter.h>
+#include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/cpp_getter.h>
 
 PyObject *py_mod; // PyObject for the module/.py file
 
@@ -47,7 +47,7 @@ void starter()
 
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("import os");
-    PyRun_SimpleString("sys.path.append(os.getcwd())");
+    PyRun_SimpleString("sys.path.append(\"/home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src\")");
 
 
     // get module
