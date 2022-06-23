@@ -1,5 +1,5 @@
 #include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/cpp_getter.cpp>
-#include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/talker.cpp>
+#include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/comp_talker.cpp>
 
 int main(int argc, char **argv)
 {
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     double dt = 0.01;
     double ft = 10; // seconds
     double mass = 1; //kg
-    double desiredPos = 10.0;
+    double desiredPos = 3.0;
     PyObject* class_params = PyTuple_Pack(Py_ssize_t(7), PyFloat_FromDouble(Kp), PyFloat_FromDouble(Ki), PyFloat_FromDouble(Kd), PyFloat_FromDouble(dt), PyFloat_FromDouble(ft), PyFloat_FromDouble(mass), PyFloat_FromDouble(desiredPos)); 
 
     // get the class
