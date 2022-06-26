@@ -1,5 +1,5 @@
 #include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/cpp_getter.cpp>
-#include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/comp_talker.cpp>
+#include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/talker.cpp>
 
 int main(int argc, char **argv)
 {

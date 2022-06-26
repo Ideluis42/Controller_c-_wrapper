@@ -1,0 +1,5 @@
+<launch>
+        <!-- Start the Node -->
+        <node pkg="scripts" type="talker" name="talker_test" />
+
+</launch>

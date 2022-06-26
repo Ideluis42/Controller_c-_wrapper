@@ -1,0 +1,5 @@
+<launch>
+        <!-- Start the Node -->
+        <node pkg="scripts" type="main" name="main_testing" />
+
+</launch>

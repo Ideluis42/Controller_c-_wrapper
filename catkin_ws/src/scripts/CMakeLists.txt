@@ -119,11 +119,15 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${mavros_msgs_INCLUDE_DIRS}
 )
 
 add_executable(main src/main.cpp)
 target_link_libraries(main ${catkin_LIBRARIES} ${PYTHON_LIBRARIES})
 add_dependencies(main scripts_generate_messages_cpp)
+
+add_executable(talker_test src/talker_test.cpp)
+target_link_libraries(talker_test ${catkin_LIBRARIES} ${PYTHON_LIBRARIES} ${mavros_msgs_INCLUDE_DIRS})
 
 # add_executable(main src/main.cpp)
 # target_link_libraries(main ${catkin_LIBRARIES} ${PYTHON_LIBRARIES})
