@@ -9,7 +9,7 @@
 int counter = 0;
 enum commandModeEnum {local, global, attitude} commandMode;
 
-void talker(float pos, int argc, char **argv)
+void talker(double pos, int argc, char **argv)
 {
   // Initialise variables
   commandMode = commandModeEnum::attitude;
@@ -29,10 +29,9 @@ void talker(float pos, int argc, char **argv)
   
   std_msgs::Float32 msg;
 
-
-  double X = 20;
+  double X = pos;
   double Y = 0;
-  double Z = 15.0 + 5.0*sin(3*counter/100.0);
+  double Z = 15;
 
   // Attitude Targets
   double roll = 0, pitch = 0;
@@ -111,7 +110,7 @@ int main(int argc, char **argv)
     double dt = 0.01;
     double ft = 10; // seconds
     double mass = 1; //kg
-    double desiredPos = 3.0;
+    double desiredPos = 20.0;
     PyObject* class_params = PyTuple_Pack(Py_ssize_t(7), PyFloat_FromDouble(Kp), PyFloat_FromDouble(Ki), PyFloat_FromDouble(Kd), PyFloat_FromDouble(dt), PyFloat_FromDouble(ft), PyFloat_FromDouble(mass), PyFloat_FromDouble(desiredPos)); 
 
     // get the class
@@ -130,11 +129,10 @@ int main(int argc, char **argv)
 
         double new_accel = force/mass;
         double new_vel = orig_vel + new_accel*dt;
-        double new_position = pos + new_vel*dt;
+        double pos = pos + new_vel*dt;
 
         // turn position into a float
-        pos = (float)new_position;
-
+       
         // send arguments to hardware w/ ros
         printf("pos: %f \n", pos);
         talker(pos, argc, argv);
