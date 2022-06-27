@@ -31,7 +31,7 @@ void talker(double pos, int argc, char **argv)
 
   double X = pos;
   double Y = 0;
-  double Z = 15;
+  double Z = 0;
 
   // Attitude Targets
   double roll = 0, pitch = 0;

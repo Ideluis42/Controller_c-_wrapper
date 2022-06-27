@@ -1,6 +1,5 @@
 // Code for python controller to interface with ros in c++
 // By: Isabel de Luis (ideluis@olin.edu)
-// Last edited: June 17, 2022
 
 #include </home/newHomeDir/Controller_c-_wrapper/catkin_ws/src/scripts/src/cpp_getter.h>
 
